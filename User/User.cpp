@@ -1,5 +1,7 @@
 #include "User.h"
 
+#include <iostream>
+
 void user::userInput()
 {
 	std::cout << "\nEnter transformation" << std::endl;

@@ -3,8 +3,6 @@
 
 #pragma once
 
-#include <iostream>
-
 class user
 {
 public:
@@ -20,7 +18,7 @@ public:
 	float y_scale;
 	float z_scale;
 
-	int rotation_angle;
+	float rotation_angle;
 
 	void userInput();
 };
