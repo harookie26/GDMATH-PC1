@@ -1,8 +1,6 @@
 #include "User/User.h"
 #include "Matrix/Matrix.h"
 
-#include <iostream>
-
 int main()
 {
 	user user;
