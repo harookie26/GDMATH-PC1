@@ -6,6 +6,20 @@
 #define M_PI 3.14
 #endif
 
+Matrix::Matrix(float x_trans, float y_trans, float z_trans,
+               float x_rot, float y_rot, float z_rot, float theta,
+               float x_scale, float y_scale, float z_scale)
+{
+	// Initialize transformationMatrix with user-provided values
+	setTransformationMatrix(x_trans, y_trans, z_trans);
+
+	// Initialize rotationMatrix with user-provided values
+	setRotationMatrix(x_rot, y_rot, z_rot, theta);
+
+	// Initialize scalingMatrix with user-provided values
+	setScalingMatrix(x_scale, y_scale, z_scale);
+}
+
 /**
  * @brief Constructs a Matrix object and initializes transformation, rotation, and scaling matrices.
  *
