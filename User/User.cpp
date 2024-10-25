@@ -7,40 +7,42 @@
  *
  * This function will ask the user to input values for x, y, and z transformations,
  * rotations, and scales. It will also prompt for a rotation angle in degrees.
+ *
+ * @param params A reference to a MatrixParams structure to store the user input.
  */
-void user::userInput()
+void user::userInput(matrixParams& params)
 {
     std::cout << "\nEnter transformation" << std::endl;
     std::cout << "x: ";
-    std::cin >> x_transformation;
+    std::cin >> params.trans.x;
 
     std::cout << "y: ";
-    std::cin >> y_transformation;
+    std::cin >> params.trans.y;
 
     std::cout << "z: ";
-    std::cin >> z_transformation;
+    std::cin >> params.trans.z;
 
     std::cout << "\nEnter rotation" << std::endl;
     std::cout << "x: ";
-    std::cin >> x_rotation;
+    std::cin >> params.rot.x;
 
     std::cout << "y: ";
-    std::cin >> y_rotation;
+    std::cin >> params.rot.y;
 
     std::cout << "z: ";
-    std::cin >> z_rotation;
-
-    std::cout << "\nEnter scale" << std::endl;
-    std::cout << "x: ";
-    std::cin >> x_scale;
-
-    std::cout << "y: ";
-    std::cin >> y_scale;
-
-    std::cout << "z: ";
-    std::cin >> z_scale;
+    std::cin >> params.rot.z;
 
     std::cout << "\nEnter rotation angle (in degrees)" << std::endl;
     std::cout << "theta: ";
-    std::cin >> rotation_angle;
+    std::cin >> params.rot.theta;
+
+    std::cout << "\nEnter scale" << std::endl;
+    std::cout << "x: ";
+    std::cin >> params.scale.x;
+
+    std::cout << "y: ";
+    std::cin >> params.scale.y;
+
+    std::cout << "z: ";
+    std::cin >> params.scale.z;
 }

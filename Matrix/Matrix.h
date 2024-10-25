@@ -1,35 +1,34 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-class Matrix
+#include "../User/User.h"
+
+class matrix
 {
 public:
-	Matrix(float x_trans, float y_trans, float z_trans,
-	       float x_rot, float y_rot, float z_rot, float theta,
-	       float x_scale, float y_scale, float z_scale); // User-defined constructor with parameters
+	matrix(const transformation& trans, const rotation& rot, const scaling& scale);
 	void setTransformationMatrix(float x, float y, float z);
 	void setRotationMatrix(float x, float y, float z, float theta);
 	void setScalingMatrix(float x, float y, float z);
-	void printMatrix(float matrix[4][4]);
-	void multiplyMatrices(float result[4][4], float mat1[4][4], float mat2[4][4]);
-	void getFinalTransformationMatrix(float x_trans, float y_trans, float z_trans,
-	                                  float x_scale, float y_scale, float z_scale,
-	                                  float x_rot, float y_rot, float z_rot, float theta,
-	                                  float result[4][4]);
-	void transformVector(float result[4], float matrix[4][4], float vector[4]);
+	static void printMatrix(float matrix[4][4]);
+	static void multiplyMatrices(float result[4][4], float mat1[4][4], float mat2[4][4]);
+	void getFinalTransformationMatrix(const matrixParams& params, float result[4][4]);
+	static void transformVector(float result[4], float matrix[4][4], float vector[4]);
 
 private:
-	float transformationMatrix[4][4];
-	float rotationMatrix[4][4];
-	float scalingMatrix[4][4];
+	float transformation_matrix_[4][4];
+
+	float rotation_matrix_[4][4];
+
+	float scaling_matrix_[4][4];
+
+	float temp_matrix1_[4][4];
 };
 
-class matrix_output
+class matrixOutput
 {
 public:
-	void matrixConversion(float x_trans, float y_trans, float z_trans,
-	                      float x_rot, float y_rot, float z_rot,
-	                      float x_scale, float y_scale, float z_scale, float theta);
+	static void matrixConversion(const matrixParams& params);
 };
 
 #endif // MATRIX_H
