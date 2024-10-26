@@ -35,7 +35,7 @@ int main() {
     transformationMatrix.applyTransformationToPoint(pointD, transformedPoint);
 
     // Output the transformed point
-    std::cout << "Transformed D' is ("
+    std::cout << "\nTransformed D' is ("
         << transformedPoint[0] << ", "
         << transformedPoint[1] << ", "
         << transformedPoint[2] << ")"
