@@ -1,34 +1,42 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <string>
+
 #include "../User/User.h"
 
 class matrix
 {
 public:
-	matrix(const transformation& trans, const rotation& rot, const scaling& scale);
-	void setTransformationMatrix(float x, float y, float z);
-	void setRotationMatrix(float x, float y, float z, float theta);
-	void setScalingMatrix(float x, float y, float z);
-	static void printMatrix(float matrix[4][4]);
-	static void multiplyMatrices(float result[4][4], float mat1[4][4], float mat2[4][4]);
-	void getFinalTransformationMatrix(const matrixParams& params, float result[4][4]);
-	static void transformVector(float result[4], float matrix[4][4], float vector[4]);
+    // Modify the constructor to accept matrixParams
+    matrix(const matrixParams& params);
+    void setTransformationMatrix(float x, float y, float z);
+    void setRotationMatrix(float x, float y, float z, float theta);
+    void setScalingMatrix(float x, float y, float z);
+    static void printMatrix(float matrix[4][4]);
+    static void multiplyMatrices(float result[4][4], float mat1[4][4], float mat2[4][4]);
+    void getFinalTransformationMatrix(const matrixParams& params);
+    void applyTransformationToPoint(float point[4], float transformedPoint[4]) const;
+
+    void exportTransformationMatrix(const std::string& filename);
+    void exportScalingMatrix(const std::string& filename);
+    void exportRotationMatrix(const std::string& filename);
+
 
 private:
-	float transformation_matrix_[4][4];
+    float transformation_matrix_[4][4];
+    float rotation_matrix_[4][4];
+    float scaling_matrix_[4][4];
+    float temp_matrix1_[4][4];
+    float final_transformation_matrix_[4][4];
 
-	float rotation_matrix_[4][4];
-
-	float scaling_matrix_[4][4];
-
-	float temp_matrix1_[4][4];
+    static void writeMatrixToFile(float matrix[4][4], const std::string& filename);
 };
 
 class matrixOutput
 {
 public:
-	static void matrixConversion(const matrixParams& params);
+    static void applyTransformationToPoint(float point[4], float transformedPoint[4]);
 };
 
 #endif // MATRIX_H

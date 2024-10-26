@@ -29,9 +29,9 @@ struct matrixParams {
 
     transformation trans;
 
-    rotation rot;
-
     scaling scale;
+
+    rotation rot;
 
 };
 
