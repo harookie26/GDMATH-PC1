@@ -8,8 +8,6 @@
 #define M_PI 3.14
 #endif
 
-const std::string matrix_folder = "Matrix/";
-
 /**
  * @brief Constructs a Matrix object and initializes transformation, rotation, and scaling matrices.
  *
@@ -21,7 +19,6 @@ matrix::matrix(const matrixParams& params)
 	setRotationMatrix(params.rot.x, params.rot.y, params.rot.z, params.rot.theta);
 	setScalingMatrix(params.scale.x, params.scale.y, params.scale.z);
 }
-
 
 /**
  * @brief Sets the transformation matrix with the given x, y, z translation values.
@@ -48,6 +45,8 @@ void matrix::setTransformationMatrix(const float x, const float y, const float z
 	transformation_matrix_[3][1] = 0;
 	transformation_matrix_[3][2] = 0;
 	transformation_matrix_[3][3] = 1;
+
+	writeMatrixToFile(transformation_matrix_, "Translate.txt");
 }
 
 /**
@@ -102,6 +101,17 @@ void matrix::setRotationMatrix(float x, float y, float z, const float theta)
 	rotation_matrix_[3][1] = 0;
 	rotation_matrix_[3][2] = 0;
 	rotation_matrix_[3][3] = 1;
+
+	// Round each element to the nearest hundredth
+	for (int i = 0; i < 4; ++i)
+	{
+		for (int j = 0; j < 4; ++j)
+		{
+			rotation_matrix_[i][j] = round(rotation_matrix_[i][j] * 100.0f) / 100.0f;
+		}
+	}
+
+	writeMatrixToFile(rotation_matrix_, "Rotation.txt");
 }
 
 /**
@@ -129,6 +139,8 @@ void matrix::setScalingMatrix(const float x, const float y, const float z)
 	scaling_matrix_[3][1] = 0;
 	scaling_matrix_[3][2] = 0;
 	scaling_matrix_[3][3] = 1;
+
+	writeMatrixToFile(scaling_matrix_, "Scale.txt");
 }
 
 /**
@@ -158,7 +170,7 @@ void matrix::printMatrix(float matrix[4][4])
  */
 void matrix::writeMatrixToFile(float matrix[4][4], const std::string& filename)
 {
-	const std::string fullPath = matrix_folder + filename;
+	const std::string fullPath = "Matrix Outputs/" + filename;
 	std::ofstream file(fullPath);
 	if (file.is_open())
 	{
@@ -176,37 +188,6 @@ void matrix::writeMatrixToFile(float matrix[4][4], const std::string& filename)
 	{
 		std::cerr << "Unable to open file: " << fullPath << std::endl;
 	}
-}
-
-
-/**
- * @brief Exports the transformation matrix to a text file.
- *
- * @param filename The name of the file to write to.
- */
-void matrix::exportTransformationMatrix(const std::string& filename)
-{
-	writeMatrixToFile(transformation_matrix_, filename);
-}
-
-/**
- * @brief Exports the scaling matrix to a text file.
- *
- * @param filename The name of the file to write to.
- */
-void matrix::exportScalingMatrix(const std::string& filename)
-{
-	writeMatrixToFile(scaling_matrix_, filename);
-}
-
-/**
- * @brief Exports the rotation matrix to a text file.
- *
- * @param filename The name of the file to write to.
- */
-void matrix::exportRotationMatrix(const std::string& filename)
-{
-	writeMatrixToFile(rotation_matrix_, filename);
 }
 
 /**
@@ -266,4 +247,6 @@ void matrix::getFinalTransformationMatrix(const matrixParams& params)
 
 	// Multiply the result with the transformation matrix to get the final matrix
 	multiplyMatrices(final_transformation_matrix_, temp_matrix1_, transformation_matrix_);
+
+	writeMatrixToFile(final_transformation_matrix_, "Final.txt");
 }

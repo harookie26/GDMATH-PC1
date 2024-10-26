@@ -9,15 +9,11 @@ struct transformation {
 
 };
 
-
-
 struct rotation {
 
     float x, y, z, theta;
 
 };
-
-
 
 struct scaling {
 
