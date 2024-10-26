@@ -22,6 +22,16 @@ void user::userInput(matrixParams& params)
     std::cout << "z: ";
     std::cin >> params.trans.z;
 
+    std::cout << "\nEnter scale" << std::endl;
+    std::cout << "x: ";
+    std::cin >> params.scale.x;
+
+    std::cout << "y: ";
+    std::cin >> params.scale.y;
+
+    std::cout << "z: ";
+    std::cin >> params.scale.z;
+
     std::cout << "\nEnter rotation" << std::endl;
     std::cout << "x: ";
     std::cin >> params.rot.x;
@@ -35,14 +45,4 @@ void user::userInput(matrixParams& params)
     std::cout << "\nEnter rotation angle (in degrees)" << std::endl;
     std::cout << "theta: ";
     std::cin >> params.rot.theta;
-
-    std::cout << "\nEnter scale" << std::endl;
-    std::cout << "x: ";
-    std::cin >> params.scale.x;
-
-    std::cout << "y: ";
-    std::cin >> params.scale.y;
-
-    std::cout << "z: ";
-    std::cin >> params.scale.z;
 }
