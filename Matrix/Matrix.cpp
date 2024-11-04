@@ -23,9 +23,9 @@ matrix::matrix(const matrixParams& params)
 /**
  * @brief Sets the transformation matrix with the given x, y, z translation values.
  *
- * @param x Translation along the x-axis.
- * @param y Translation along the y-axis.
- * @param z Translation along the z-axis.
+ * @param x The translation value along the x-axis.
+ * @param y The translation value along the y-axis.
+ * @param z The translation value along the z-axis.
  */
 void matrix::setTransformationMatrix(const float x, const float y, const float z)
 {
@@ -50,16 +50,16 @@ void matrix::setTransformationMatrix(const float x, const float y, const float z
 }
 
 /**
- * @brief Sets the rotation matrix with the given x, y, z rotation values in degrees.
+ * @brief Sets the rotation matrix with the given x, y, z axis and theta in degrees.
  *
- * @param x Rotation around the x-axis in degrees.
- * @param y Rotation around the y-axis in degrees.
- * @param z Rotation around the z-axis in degrees.
- * @param theta Angle of rotation in degrees.
+ * @param x The x component of the rotation axis.
+ * @param y The y component of the rotation axis.
+ * @param z The z component of the rotation axis.
+ * @param theta The rotation angle in degrees.
  */
 void matrix::setRotationMatrix(float x, float y, float z, const float theta)
 {
-	// Normalize the axis vector (x, y, z)  
+	// Normalize the axis vector (x, y, z)
 	const float magnitude = sqrt(x * x + y * y + z * z);
 	if (magnitude != 0.0f)
 	{
@@ -68,33 +68,27 @@ void matrix::setRotationMatrix(float x, float y, float z, const float theta)
 		z /= magnitude;
 	}
 
-	// Convert angle from degrees to radians  
+	// Convert angle from degrees to radians
 	const float radTheta = static_cast<float>(theta * M_PI / 180.0);
 
-	// Compute the half-angle  
-	const float halfTheta = radTheta / 2;
+	// Compute sine and cosine of theta
+	const float cosTheta = cos(radTheta);
+	const float sinTheta = sin(radTheta);
 
-	// Compute quaternion components  
-	const float a = cos(halfTheta);
-	const float sinHalfTheta = sin(halfTheta);
-	const float b = sinHalfTheta * x;
-	const float c = sinHalfTheta * y;
-	const float d = sinHalfTheta * z;
-
-	// Fill in the rotation matrix using quaternion matrix components  
-	rotation_matrix_[0][0] = a * a + b * b - c * c - d * d;
-	rotation_matrix_[0][1] = 2 * (b * c + a * d);
-	rotation_matrix_[0][2] = 2 * (b * d - a * c);
+	// Fill in the rotation matrix using Rodrigues' formula
+	rotation_matrix_[0][0] = cosTheta + x * x * (1 - cosTheta);
+	rotation_matrix_[0][1] = x * y * (1 - cosTheta) - z * sinTheta;
+	rotation_matrix_[0][2] = x * z * (1 - cosTheta) + y * sinTheta;
 	rotation_matrix_[0][3] = 0;
 
-	rotation_matrix_[1][0] = 2 * (b * c - a * d);
-	rotation_matrix_[1][1] = a * a - b * b + c * c - d * d;
-	rotation_matrix_[1][2] = 2 * (c * d + a * b);
+	rotation_matrix_[1][0] = y * x * (1 - cosTheta) + z * sinTheta;
+	rotation_matrix_[1][1] = cosTheta + y * y * (1 - cosTheta);
+	rotation_matrix_[1][2] = y * z * (1 - cosTheta) - x * sinTheta;
 	rotation_matrix_[1][3] = 0;
 
-	rotation_matrix_[2][0] = 2 * (b * d + a * c);
-	rotation_matrix_[2][1] = 2 * (c * d - a * b);
-	rotation_matrix_[2][2] = a * a - b * b - c * c + d * d;
+	rotation_matrix_[2][0] = z * x * (1 - cosTheta) - y * sinTheta;
+	rotation_matrix_[2][1] = z * y * (1 - cosTheta) + x * sinTheta;
+	rotation_matrix_[2][2] = cosTheta + z * z * (1 - cosTheta);
 	rotation_matrix_[2][3] = 0;
 
 	rotation_matrix_[3][0] = 0;
@@ -117,9 +111,9 @@ void matrix::setRotationMatrix(float x, float y, float z, const float theta)
 /**
  * @brief Sets the scaling matrix with the given x, y, z scaling values.
  *
- * @param x Scaling along the x-axis.
- * @param y Scaling along the y-axis.
- * @param z Scaling along the z-axis.
+ * @param x The scaling factor along the x-axis.
+ * @param y The scaling factor along the y-axis.
+ * @param z The scaling factor along the z-axis.
  */
 void matrix::setScalingMatrix(const float x, const float y, const float z)
 {
@@ -141,6 +135,26 @@ void matrix::setScalingMatrix(const float x, const float y, const float z)
 	scaling_matrix_[3][3] = 1;
 
 	writeMatrixToFile(scaling_matrix_, "Scale.txt");
+}
+
+/**
+ * @brief Computes the final transformation matrix by combining translation, scaling, and rotation matrices.
+ *
+ * @param params The parameters for the matrix transformations.
+ */
+void matrix::getFinalTransformationMatrix(const matrixParams& params)
+{
+	setTransformationMatrix(params.trans.x, params.trans.y, params.trans.z);
+	setScalingMatrix(params.scale.x, params.scale.y, params.scale.z);
+	setRotationMatrix(params.rot.x, params.rot.y, params.rot.z, params.rot.theta);
+
+	// Multiply rotation and scaling matrices
+	multiplyMatrices(temp_matrix1_, rotation_matrix_, scaling_matrix_);
+
+	// Multiply the result with the transformation matrix to get the final matrix
+	multiplyMatrices(final_transformation_matrix_, temp_matrix1_, transformation_matrix_);
+
+	writeMatrixToFile(final_transformation_matrix_, "Final.txt");
 }
 
 /**
@@ -228,25 +242,4 @@ void matrix::multiplyMatrices(float result[4][4], float mat1[4][4], float mat2[4
 			}
 		}
 	}
-}
-
-/**
- * @brief Computes the final transformation matrix by combining translation, scaling, and rotation matrices.
- *
- * @param params The parameters for the matrix transformations.
- */
-void matrix::getFinalTransformationMatrix(const matrixParams& params)
-{
-	// Set individual matrices
-	setTransformationMatrix(params.trans.x, params.trans.y, params.trans.z);
-	setScalingMatrix(params.scale.x, params.scale.y, params.scale.z);
-	setRotationMatrix(params.rot.x, params.rot.y, params.rot.z, params.rot.theta);
-
-	// Multiply translation and scaling matrices
-	multiplyMatrices(temp_matrix1_, rotation_matrix_, scaling_matrix_);
-
-	// Multiply the result with the transformation matrix to get the final matrix
-	multiplyMatrices(final_transformation_matrix_, temp_matrix1_, transformation_matrix_);
-
-	writeMatrixToFile(final_transformation_matrix_, "Final.txt");
 }
