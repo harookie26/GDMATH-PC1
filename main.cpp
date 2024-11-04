@@ -5,6 +5,7 @@
 
 int main()
 {
+	int input;
 	matrixParams params;
 
 	float pointD[4] = {-14, 10, 42, 1}; // Original point (x, y, z, 1)
@@ -29,6 +30,9 @@ int main()
 		<< transformedPoint[1] << ", "
 		<< transformedPoint[2] << ")"
 		<< std::endl;
+
+	std::cout << "\nInput any number to exit: ";
+	std::cin >> input;
 
 	return 0;
 }
